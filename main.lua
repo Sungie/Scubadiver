@@ -1,5 +1,5 @@
 entities = {
-  {name="ennemy1", x=100, y=100, angle = 0, speed = 10}
+  {name="ennemy1", x=1300, y=500, angle = 90, speed = 90, anglespeed=60}
 }
 
 touched = false
@@ -24,8 +24,10 @@ function love.draw()
   love.graphics.setColor(1/(score/10),1/(score/10),1/(score/10))
   love.graphics.rectangle("fill", 0,0, width, height)
 
-  love.graphics.setColor(1, 0, 0)
+  love.graphics.setColor(0, 0, 0)
   love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
+  love.graphics.print("angle:"..entities[1].angle, 100 , 150, 0,1,1)
+  love.graphics.print("Obj-angle:"..objectiveAngle, 100 , 200, 0,1,1)
 
   for i, entity in pairs(entities) do
     if entity.name == "heart" then
@@ -37,7 +39,7 @@ function love.draw()
       love.graphics.circle("fill", entity.x, entity.y, shield.radius)
     else
       love.graphics.setColor(0,0,0)
-      love.graphics.polygon("fill", entity.x+30*math.cos(entity.angle), entity.y + 30*math.sin(entity.angle), entity.x- 30*math.cos(entity.angle+120), entity.y-30*math.sin(entity.angle+120), entity.x-30*math.cos(entity.angle-120), entity.y-30*math.sin(entity.angle-120))
+      love.graphics.polygon("fill", entity.x+30*math.cos(math.rad(entity.angle)), entity.y + 30*math.sin(math.rad(entity.angle)), entity.x+ 30*math.cos(math.rad(entity.angle+120)), entity.y+30*math.sin(math.rad(entity.angle+120)), entity.x+30*math.cos(math.rad(entity.angle-120)), entity.y+30*math.sin(math.rad(entity.angle-120)))
     end
   end
 end
@@ -60,9 +62,10 @@ function love.update(dt)
   end
   for i, entity in pairs(entities) do
     if entity.name~="heart" and entity.name~="shield" then
-      entity.angle = entity.angle + math.random(-30,30)/100 + 0.01
-      entity.x = entity.x+ entity.speed*math.cos(entity.angle)
-      entity.y = entity.y+ entity.speed*math.sin(entity.angle)
+      objectiveAngle = 180 + math.deg(math.atan2((entity.y-heart.y),(entity.x - heart.x)))
+      entity.angle =  entity.angle + dt*entity.anglespeed*(entity.angle<objectiveAngle and 1 or -1)
+      entity.x = entity.x+ entity.speed*math.cos(math.rad(entity.angle))*dt
+      entity.y = entity.y+ entity.speed*math.sin(math.rad(entity.angle))*dt
     end
   end
 end
