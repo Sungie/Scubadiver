@@ -68,7 +68,6 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.mousepressed(x, y, button, isTouch)
-  --shield.vel = {x= x/20 - shield.x, y = y/20 - shield.y}
 
   --Distance between {x,y} and center of the circle
   dist = math.sqrt((math.pow((x - shield.x), 2)) + (math.pow((y - shield.y), 2)))
