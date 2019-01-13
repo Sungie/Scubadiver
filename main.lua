@@ -1,5 +1,9 @@
 entities = {
+<<<<<<< HEAD
   {name="ennemy1", x=500, y=500,angle = 0}
+=======
+  {name="ennemy1", x=100, y=100, angle = 0}
+>>>>>>> 07f77ecafa14534561e2864aa5d9171ee61e73cf
 }
 
 touched = false
@@ -11,7 +15,7 @@ function love.load()
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
 
-  shield = {name="shield",x=width/2, y = height/2 - 100, speed=50, vel=nil, radius = 30}
+  shield = {name="shield",x=width/2, y = height/2 - 100, speed=100, vel=nil, radius = 30}
   heart = {name="heart", x= width/2, y= 10},
   table.insert(entities, shield)
   table.insert(entities, heart)
@@ -39,8 +43,8 @@ end
 function love.update(dt)
 
   if shield.vel ~= nil then
-    shield.x = shield.x + shield.vel.x/math.sqrt(math.pow(shield.vel.x,2)+math.pow(shield.vel.y,2)) * shield.speed * dt
-    shield.y = shield.y + shield.vel.y/math.sqrt(math.pow(shield.vel.x,2)+math.pow(shield.vel.y,2)) * shield.speed * dt
+    shield.x = shield.x + shield.vel.velx/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
+    shield.y = shield.y + shield.vel.vely/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
   end
   for i, entity in pairs(entities) do
     if entity.name~="heart" and entity.name~="shield" then
@@ -49,6 +53,18 @@ function love.update(dt)
       entity.y = entity.y+ 30*math.sin(entity.angle)
     end
   end
+  if shield.x > width/2 - 10 and shield.x < width/2 +10
+    and shield.y < height/2 - 90 and shield.y > height/2 - 110 then
+    shield.vel = nil
+  end
+  if shieldHandled == false then
+    if shield.vel ~= nil then
+      shield.x = shield.x + shield.vel.velx/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
+      shield.y = shield.y + shield.vel.vely/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
+    end
+
+  end
+
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -74,6 +90,10 @@ function love.mousemoved(x, y, dx, dy)
   end
 end
 function love.mousereleased(x, y, button, isTouch)
+  if shieldHandled then
+    shield.vel = {velx = width/2 - shield.x, vely = height/2 - 100 - shield.y}
+  end
   touched = false
   shieldHandled = false
+
 end
