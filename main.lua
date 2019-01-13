@@ -1,5 +1,5 @@
 entities = {
-  {name="ennemy1", x=10, y=10, angle = 0}
+  {name="ennemy1", x=500, y=500,angle = 0}
 }
 
 touched = false
@@ -31,7 +31,7 @@ function love.draw()
       love.graphics.circle("fill", entity.x, entity.y, shield.radius)
     else
       love.graphics.setColor(0,0,0)
-      love.graphics.polygon("fill", entity.x+math.cos(entity.angle), entity.y + math.sin(entity.angle), entity.x- math.cos(entity.angle+120), entity.y-math.sin(entity.angle+120), entity.x-math.cos(entity.angle-120), entity.y-math.sin(entity.angle-120))
+      love.graphics.polygon("fill", entity.x+30*math.cos(entity.angle), entity.y + 30*math.sin(entity.angle), entity.x- 30*math.cos(entity.angle+120), entity.y-30*math.sin(entity.angle+120), entity.x-30*math.cos(entity.angle-120), entity.y-30*math.sin(entity.angle-120))
     end
   end
 end
@@ -45,6 +45,8 @@ function love.update(dt)
   for i, entity in pairs(entities) do
     if entity.name~="heart" and entity.name~="shield" then
       entity.angle = entity.angle + 0.1
+      entity.x = entity.x+ 30*math.cos(entity.angle)
+      entity.y = entity.y+ 30*math.sin(entity.angle)
     end
   end
 end
