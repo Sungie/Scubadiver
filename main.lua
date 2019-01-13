@@ -1,5 +1,5 @@
 entities = {
-  {name="ennemy1", x=100, y=100, angle = 0, speed = 15}
+  {name="ennemy1", x=100, y=100, angle = 0, speed = 10}
 }
 
 touched = false
@@ -11,7 +11,7 @@ function love.load()
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
 
-  shield = {name = "shield", x = width/2, y = height/2 , speed = 100, vel = nil, radius = 30}
+  shield = {name = "shield", x = width/2, y = height/2 , speed = 500, vel = nil, radius = 30}
   heart = {name = "heart", x = width/2, y = 50, width = 50, height = 50}
   table.insert(entities, shield)
   table.insert(entities, heart)
@@ -21,7 +21,7 @@ end
 score = 0
 
 function love.draw()
-  love.graphics.setColor(1/score,1/score,1/score)
+  love.graphics.setColor(1/(score/10),1/(score/10),1/(score/10))
   love.graphics.rectangle("fill", 0,0, width, height)
 
   love.graphics.setColor(1, 0, 0)
@@ -43,7 +43,7 @@ function love.draw()
 end
 
 function love.update(dt)
-    score = score + dt
+    --score = score + dt
   if shield.vel ~= nil then
     shield.x = shield.x + shield.vel.velx/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
     shield.y = shield.y + shield.vel.vely/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
