@@ -1,5 +1,5 @@
 entities = {
-  {name="ennemy1", x=500, y=500, angle = 90, speed = 100, anglespeed=20}
+  {name="ennemy1", x=1300, y=500, angle = 90, speed = 90, anglespeed=60}
 }
 
 touched = false
@@ -24,8 +24,10 @@ function love.draw()
   love.graphics.setColor(1/score,1/score,1/score)
   love.graphics.rectangle("fill", 0,0, width, height)
 
-  love.graphics.setColor(1, 0, 0)
+  love.graphics.setColor(0, 0, 0)
   love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
+  love.graphics.print("angle:"..entities[1].angle, 100 , 150, 0,1,1)
+  love.graphics.print("Obj-angle:"..objectiveAngle, 100 , 200, 0,1,1)
 
   for i, entity in pairs(entities) do
     if entity.name == "heart" then
@@ -43,7 +45,7 @@ function love.draw()
 end
 
 function love.update(dt)
-    score = score + dt
+  --  score = score + dt
   if shield.vel ~= nil then
     shield.x = shield.x + shield.vel.velx/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
     shield.y = shield.y + shield.vel.vely/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
@@ -60,7 +62,8 @@ function love.update(dt)
   end
   for i, entity in pairs(entities) do
     if entity.name~="heart" and entity.name~="shield" then
-      entity.angle = math.tan((entity.y-heart.y)/(entity.x - heart.x))
+      objectiveAngle = 180 + math.deg(math.atan2((entity.y-heart.y),(entity.x - heart.x)))
+      entity.angle =  entity.angle + dt*entity.anglespeed*(entity.angle<objectiveAngle and 1 or -1)
       entity.x = entity.x+ entity.speed*math.cos(math.rad(entity.angle))*dt
       entity.y = entity.y+ entity.speed*math.sin(math.rad(entity.angle))*dt
     end
