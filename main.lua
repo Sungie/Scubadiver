@@ -12,7 +12,6 @@ function love.load()
   love.window.setFullscreen(true)
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
-
   shield = {name = "shield", x = width/2, y = height/2 , speed = 500, vel = nil, radius = 30}
   heart = {name = "heart", x = width/2, y = 50, width = 50, height = 50}
   table.insert(entities, shield)
