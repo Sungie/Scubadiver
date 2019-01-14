@@ -1,12 +1,13 @@
 --
 --Vars--
 --
+local Scubadiver = require "scubadiver"
 
 entities = {
-  --{name="ennemy1", x=500, y=500, angle = 30, speed = 180, anglespeed=120},
-  --{name="ennemy2", x=900, y=500, angle = 90, speed = 180, anglespeed=120},
-  --{name="ennemy3", x=500, y=900, angle = 50, speed = 180, anglespeed=120},
-  --{name="ennemy4", x=750, y=500, angle = 300, speed = 180, anglespeed=120}
+  -- {name="ennemy1", x=500, y=500, angle = 30, speed = 180, anglespeed=120},
+  -- {name="ennemy2", x=900, y=500, angle = 90, speed = 180, anglespeed=120},
+  -- {name="ennemy3", x=500, y=900, angle = 50, speed = 180, anglespeed=120},
+  -- {name="ennemy4", x=750, y=500, angle = 300, speed = 180, anglespeed=120}
 }
 
 shieldHandled = false
@@ -23,9 +24,10 @@ function love.load()
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
   shield = {name = "shield", x = width/2, y = height/2 , speed = 500, vel = nil, radius = 30}
-  heart = {name = "heart", x = width/2, y = 50, width = 50, height = 50}
+  diver = Scubadiver:new()
+  --diver = { name = diver.name , x = diver.x, y = diver.y, width = diver.w ,height = diver.h}
   table.insert(entities, shield)
-  table.insert(entities, heart)
+  table.insert(entities, diver)
 end
 
 
@@ -37,10 +39,8 @@ function love.draw()
 
     love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
     for i, entity in pairs(entities) do
-      if entity.name == "heart" then
-        love.graphics.setColor(1,0,0)
-        love.graphics.rectangle("fill", entity.x - (heart.width/2), entity.y - (heart.height/2), heart.width, heart.height)
-
+      if entity.name == "diver" then
+        diver:draw()
       elseif entity.name == "shield" then
         love.graphics.setColor(0.5,0.5,0.5)
         love.graphics.circle("fill", entity.x, entity.y, shield.radius)
@@ -74,8 +74,8 @@ function love.update(dt)
       end
     end
     for i, entity in pairs(entities) do
-      if entity.name~="heart" and entity.name~="shield" then
-        objectiveAngle = 180 + math.deg(math.atan2((entity.y-heart.y),(entity.x - heart.x)))
+      if entity.name~="diver" and entity.name~="shield" then
+        objectiveAngle = 180 + math.deg(math.atan2((entity.y-diver.y),(entity.x - diver.x)))
         if math.abs(entity.angle-objectiveAngle) < 180 then
           entity.angle =  (entity.angle + dt*entity.anglespeed*(entity.angle<objectiveAngle and 1 or -1))%360
         else
@@ -83,10 +83,11 @@ function love.update(dt)
         end
         entity.x = entity.x+ entity.speed*math.cos(math.rad(entity.angle))*dt
         entity.y = entity.y+ entity.speed*math.sin(math.rad(entity.angle))*dt
+
         if touched(entity,shield) then
           table.remove(entities,i)
         end
-        if touched(entity, heart) then
+        if touched(entity, diver) then
           --Perdu
           gameover = true
         end
@@ -113,7 +114,6 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.mousepressed(x, y, button, isTouch)
-
   --Distance between {x,y} and center of the circle
   local dist = math.sqrt((math.pow((x - shield.x), 2)) + (math.pow((y - shield.y), 2)))
   if math.floor(dist) < shield.radius then
