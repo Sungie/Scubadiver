@@ -64,29 +64,33 @@ function love.update(dt)
     score = score + dt
     for i, entity in pairs(entities) do
       if entity.update then entity.update(dt) end
-      if entity.name~="diver" and entity.name~="shield" then
-        objectiveAngle = 180 + math.deg(math.atan2((entity.y-diver.y),(entity.x - diver.x)))
-        if math.abs(entity.angle-objectiveAngle) < 180 then
-          entity.angle =  (entity.angle + dt*entity.anglespeed*(entity.angle<objectiveAngle and 1 or -1))%360
-        else
-          entity.angle =  (entity.angle + dt*entity.anglespeed*(entity.angle<objectiveAngle and -1 or 1))%360
-        end
-        entity.x = entity.x+ entity.speed*math.cos(math.rad(entity.angle))*dt
-        entity.y = entity.y+ entity.speed*math.sin(math.rad(entity.angle))*dt
+    end
+    spawn()
+  end
+end
 
-        if touched(entity,shield) or entity.y < 0 then
-          table.remove(entities,i)
-        end
-        if touched(entity, diver) then
-          --Perdu
-          gameover = true
-        end
+function spawn()
+  if math.random(0,100)>99 then
+    local ennemy = {name="ennemy", x=math.random(0,width), y=math.random(height/2,height), angle = math.random(0,360), speed = 180, anglespeed=30}
+    local update = function (dt)
+      objectiveAngle = 180 + math.deg(math.atan2((ennemy.y-diver.y),(ennemy.x - diver.x)))
+      if math.abs(ennemy.angle-objectiveAngle) < 180 then
+        ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and 1 or -1))%360
+      else
+        ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and -1 or 1))%360
+      end
+      ennemy.x = ennemy.x+ ennemy.speed*math.cos(math.rad(ennemy.angle))*dt
+      ennemy.y = ennemy.y+ ennemy.speed*math.sin(math.rad(ennemy.angle))*dt
+      if touched(ennemy,shield) or ennemy.y < 0 then
+        table.remove(entities,i)
+      end
+      if touched(ennemy, diver) then
+        --Perdu
+        gameover = true
       end
     end
-    if math.random(0,100)>99 then
-      local ennemy = {name="ennemy", x=math.random(0,width), y=math.random(height/2,height), angle = math.random(0,360), speed = 180, anglespeed=30}
-      table.insert(entities,ennemy)
-    end
+    ennemy.update = update
+    table.insert(entities,ennemy)
   end
 end
 
