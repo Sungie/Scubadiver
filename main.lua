@@ -57,26 +57,13 @@ function gameoverdraw()
   love.graphics.setColor(1, 1, 1, 1)
   love.graphics.draw(wasted, width/2 - (wasted:getWidth())/2, height/2 - (wasted:getHeight())/2,0,1,1)
 end
+
 function love.update(dt)
-  if gameover then
-  else
+  if not gameover then
   --gameloop
     score = score + dt
-    if shield.vel ~= nil then
-      shield.x = shield.x + shield.vel.velx/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
-      shield.y = shield.y + shield.vel.vely/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
-    end
-    if shield.x > width/2 - 10 and shield.x < width/2 +10
-      and shield.y < height/2 - 90 and shield.y > height/2 - 110 then
-      shield.vel = nil
-    end
-    if shield.handled == false then
-      if shield.vel ~= nil then
-        shield.x = shield.x + shield.vel.velx/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
-        shield.y = shield.y + shield.vel.vely/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
-      end
-    end
     for i, entity in pairs(entities) do
+      if entity.update then entity.update(dt) end
       if entity.name~="diver" and entity.name~="shield" then
         objectiveAngle = 180 + math.deg(math.atan2((entity.y-diver.y),(entity.x - diver.x)))
         if math.abs(entity.angle-objectiveAngle) < 180 then
@@ -87,7 +74,7 @@ function love.update(dt)
         entity.x = entity.x+ entity.speed*math.cos(math.rad(entity.angle))*dt
         entity.y = entity.y+ entity.speed*math.sin(math.rad(entity.angle))*dt
 
-        if touched(entity,shield) then
+        if touched(entity,shield) or entity.y < 0 then
           table.remove(entities,i)
         end
         if touched(entity, diver) then

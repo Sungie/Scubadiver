@@ -11,8 +11,21 @@ local Shield = {}
     shield.handled = false
 
 
-    function shield:update(dt)
-      --Update shield
+    function shield.update(dt)
+      if shield.vel ~= nil then
+        shield.x = shield.x + shield.vel.velx/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
+        shield.y = shield.y + shield.vel.vely/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
+      end
+      if shield.x > width/2 - 10 and shield.x < width/2 +10
+        and shield.y < height/2 - 90 and shield.y > height/2 - 110 then
+        shield.vel = nil
+      end
+      if shield.handled == false then
+        if shield.vel ~= nil then
+          shield.x = shield.x + shield.vel.velx/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
+          shield.y = shield.y + shield.vel.vely/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
+        end
+      end
     end
 
     function shield:draw()
