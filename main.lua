@@ -73,12 +73,28 @@ function spawn()
     ennemy.angle = math.random(0,360)
     ennemy.speed = 100+0.1*score
     ennemy.anglespeed = 20+0.001*score
+    ennemy.timer = 0
+    ennemy.track = true
+    ennemy.rot = math.random()>0.5
     ennemy.update = function (dt)
-      objectiveAngle = 180 + math.deg(math.atan2((ennemy.y-diver.y),(ennemy.x - diver.x)))
-      if math.abs(ennemy.angle-objectiveAngle) < 180 then
-        ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and 1 or -1))%360
+      ennemy.timer = ennemy.timer + dt
+      if ennemy.timer > 5 then
+        ennemy.timer = 0
+        ennemy.track = math.random()>0.5
+      end
+      if ennemy.track then
+        objectiveAngle = 180 + math.deg(math.atan2((ennemy.y-diver.y),(ennemy.x - diver.x)))
+        if math.abs(ennemy.angle-objectiveAngle) < 180 then
+          ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and 1 or -1))%360
+        else
+          ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and -1 or 1))%360
+        end
       else
-        ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and -1 or 1))%360
+        if ennemy.rot then
+          ennemy.angle = (ennemy.angle + dt*ennemy.anglespeed) % 360
+        else
+          ennemy.angle = (ennemy.angle - dt*ennemy.anglespeed) % 360
+        end
       end
       ennemy.x = ennemy.x+ ennemy.speed*math.cos(math.rad(ennemy.angle))*dt
       ennemy.y = ennemy.y+ ennemy.speed*math.sin(math.rad(ennemy.angle))*dt
