@@ -27,8 +27,8 @@ end
 function printBG()
   local x = 18
   for i = 0, x do
-    love.graphics.setColor(i/x,i/x,i/x)
-    love.graphics.rectangle("fill", 0,((((score)%x)-i)*height), width, height)
+    love.graphics.setColor(1/i,1/i,1/i)
+    love.graphics.rectangle("fill", 0,(-(((score)%x)-i)*height), width, height)
   end
   -- love.graphics.setColor(0,1,0.5)
   -- love.graphics.rectangle("fill", 0,0, width, height)
