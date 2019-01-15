@@ -69,11 +69,11 @@ function love.update(dt)
 end
 
 function spawn()
-  if math.random(0,100)>99 then
+  if math.random(0,100)>(99-0.1*score) then
     local ennemy = {}
     ennemy.name = "ennemy"
-    ennemy.x = math.random(width-50*score,width)
-    ennemy.y = math.random(height-50*score,height)
+    ennemy.x = math.random(0,width)
+    ennemy.y = math.random(height/2,height)
     ennemy.angle = math.random(0,360)
     ennemy.speed = 100+0.1*score
     ennemy.anglespeed = 20+0.001*score
