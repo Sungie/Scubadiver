@@ -3,12 +3,7 @@
 --
 local Scubadiver = require "scubadiver"
 local Shield = require "shield"
-entities = {
-  -- {name="ennemy1", x=500, y=500, angle = 30, speed = 180, anglespeed=120},
-  -- {name="ennemy2", x=900, y=500, angle = 90, speed = 180, anglespeed=120},
-  -- {name="ennemy3", x=500, y=900, angle = 50, speed = 180, anglespeed=120},
-  -- {name="ennemy4", x=750, y=500, angle = 300, speed = 180, anglespeed=120}
-}
+entities = {}
 
 gameover = false
 
@@ -71,8 +66,14 @@ end
 
 function spawn()
   if math.random(0,100)>99 then
-    local ennemy = {name="ennemy", x=math.random(0,width), y=math.random(height/2,height), angle = math.random(0,360), speed = 180, anglespeed=30}
-    local update = function (dt)
+    local ennemy = {}
+    ennemy.name = "ennemy"
+    ennemy.x = math.random(width-50*score,width)
+    ennemy.y = math.random(height-50*score,height)
+    ennemy.angle = math.random(0,360)
+    ennemy.speed = 100+0.1*score
+    ennemy.anglespeed = 20+0.001*score
+    ennemy.update = function (dt)
       objectiveAngle = 180 + math.deg(math.atan2((ennemy.y-diver.y),(ennemy.x - diver.x)))
       if math.abs(ennemy.angle-objectiveAngle) < 180 then
         ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and 1 or -1))%360
@@ -82,15 +83,23 @@ function spawn()
       ennemy.x = ennemy.x+ ennemy.speed*math.cos(math.rad(ennemy.angle))*dt
       ennemy.y = ennemy.y+ ennemy.speed*math.sin(math.rad(ennemy.angle))*dt
       if touched(ennemy,shield) or ennemy.y < 0 then
-        table.remove(entities,i)
+        removeEntity(ennemy)
       end
       if touched(ennemy, diver) then
         --Perdu
         gameover = true
       end
     end
-    ennemy.update = update
     table.insert(entities,ennemy)
+  end
+end
+
+function removeEntity(targetEntity)
+  for i, entity in pairs(entities) do
+    if entity == targetEntity then
+      table.remove(entities,i)
+      return
+    end
   end
 end
 
