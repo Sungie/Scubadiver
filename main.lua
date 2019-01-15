@@ -55,7 +55,7 @@ end
 
 function gameoverdraw()
   love.graphics.setColor(1, 1, 1, 1)
-  love.graphics.draw(wasted, width/2 - (wasted.getWidth(wasted))/2, height/2 - (wasted.getHeight(wasted))/2,0,1,1)
+  love.graphics.draw(wasted, width/2 - (wasted:getWidth())/2, height/2 - (wasted:getHeight())/2,0,1,1)
 end
 function love.update(dt)
   if gameover then
