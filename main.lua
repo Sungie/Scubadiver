@@ -25,9 +25,13 @@ function love.load()
 end
 
 function printBG()
-  love.graphics.setColor(1,1,1)
-  love.graphics.rectangle("fill", 0,0, width, height)
-  love.graphics.setColor(0, 0, 0)
+
+  love.graphics.setColor(0,1,0.5)
+  love.graphics.rectangle("fill", 0,((((score)%3))*height), width, height)
+  love.graphics.setColor(1,0.5,0)
+  love.graphics.rectangle("fill", 0,((((score)%3)-1)*height), width, height)
+  love.graphics.setColor(0.5,0,1)
+  love.graphics.rectangle("fill", 0,((((score)%3)-2)*height), width, height)
 end
 
 function love.draw()
@@ -103,7 +107,7 @@ function spawn()
       end
       if touched(ennemy, diver) then
         --Perdu
-        gameover = true
+        --gameover = true
       end
     end
     table.insert(entities,ennemy)
