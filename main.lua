@@ -40,22 +40,23 @@ function love.draw()
   love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
 
   for i, entity in pairs(entities) do
-    if entity.name == "diver" then
-    --  diver:draw()
-    elseif entity.name == "shield" then
-    --  shield:draw()
+    if entity.draw  then
+      entity:draw()
     else
+      --draw ennemies
       love.graphics.setColor(0,0,0)
       love.graphics.polygon("fill", entity.x+30*math.cos(math.rad(entity.angle)), entity.y + 30*math.sin(math.rad(entity.angle)), entity.x+ 30*math.cos(math.rad(entity.angle+120)), entity.y+30*math.sin(math.rad(entity.angle+120)), entity.x+30*math.cos(math.rad(entity.angle-120)), entity.y+30*math.sin(math.rad(entity.angle-120)))
     end
-    --entity:draw()
   end
   if gameover then
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(wasted, width/2 - (wasted.getWidth(wasted))/2, height/2 - (wasted.getHeight(wasted))/2,0,1,1)
+    gameoverdraw()
   end
 end
 
+function gameoverdraw()
+  love.graphics.setColor(1, 1, 1, 1)
+  love.graphics.draw(wasted, width/2 - (wasted.getWidth(wasted))/2, height/2 - (wasted.getHeight(wasted))/2,0,1,1)
+end
 function love.update(dt)
   if gameover then
   else
