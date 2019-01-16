@@ -28,7 +28,9 @@ end
 function printBG()
   local x = 18
   for i = 0, x do
-    love.graphics.setColor(1/i,1/i,1/i)
+  --  love.graphics.setColor(1/i,1/i,1/i)
+    love.graphics.setColor(1,1,1)
+
     love.graphics.rectangle("fill", 0,(-(((score)%x)-i)*height), width, height)
   end
   -- love.graphics.setColor(0,1,0.5)
@@ -97,11 +99,14 @@ function removeEntity(targetEntity)
   end
 end
 
-function touched(e1,e2)
-  if math.sqrt((math.pow((e1.x - e2.x), 2)) + (math.pow((e1.y - e2.y), 2))) < 50 then
-    return true
+function touched(e1,e2,size)
+  if size == nil then
+    size = 50
   end
-  return false
+    if math.sqrt((math.pow((e1.x - e2.x), 2)) + (math.pow((e1.y - e2.y), 2))) < size then
+      return true
+    end
+    return false
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -127,7 +132,7 @@ function paramEnnemyGeneration()
   {
     fish =
     {
-      start = 0,stop = 200,
+      start = 0,stop = 1,
       frequency = 3,
       xmin = 0, xmax = width,
       ymin = height/2, ymax = height,
@@ -159,9 +164,9 @@ function paramEnnemyGeneration()
         if touched(ennemy,shield) or ennemy.y < 0 then
           removeEntity(ennemy)
         end
-        if touched(ennemy, diver) then
+        if touched(ennemy, diver, ennemy.size) then
           --Perdu
-          --gameover = true
+          gameover = true
         end
       end,
       draw = function (entity)
@@ -205,7 +210,7 @@ function paramEnnemyGeneration()
         end
         if touched(ennemy, diver) then
           --Perdu
-          --gameover = true
+          gameover = true
         end
       end,
       draw = function (entity)
@@ -247,9 +252,9 @@ function paramEnnemyGeneration()
         if touched(ennemy,shield) or ennemy.y < 0 then
           removeEntity(ennemy)
         end
-        if touched(ennemy, diver) then
+        if touched(ennemy, diver, 40) then
           --Perdu
-          --gameover = true
+          gameover = true
         end
       end,
       draw = function (entity)
@@ -293,7 +298,7 @@ function paramEnnemyGeneration()
         end
         if touched(ennemy, diver) then
           --Perdu
-          --gameover = true
+          gameover = true
         end
       end,
       draw = function (entity)
