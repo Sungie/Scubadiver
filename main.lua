@@ -7,7 +7,7 @@ entities = {}
 
 gameover = false
 
-score = 0
+score = 190
 wasted = love.graphics.newImage("img/wasted.jpg")
 
 ----
@@ -22,6 +22,7 @@ function love.load()
   diver = Scubadiver:new()
   table.insert(entities, shield)
   table.insert(entities, diver)
+  paramEnnemyGeneration()
 end
 
 function printBG()
@@ -42,14 +43,9 @@ end
 function love.draw()
   printBG()
   love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
-
   for i, entity in pairs(entities) do
     if entity.draw  then
       entity:draw()
-    else
-      --draw ennemies
-      love.graphics.setColor(0,0,0)
-      love.graphics.polygon("fill", entity.x+30*math.cos(math.rad(entity.angle)), entity.y + 30*math.sin(math.rad(entity.angle)), entity.x+ 30*math.cos(math.rad(entity.angle+120)), entity.y+30*math.sin(math.rad(entity.angle+120)), entity.x+30*math.cos(math.rad(entity.angle-120)), entity.y+30*math.sin(math.rad(entity.angle-120)))
     end
   end
   if gameover then
@@ -67,55 +63,28 @@ function love.update(dt)
   --gameloop
     score = score + dt
     for i, entity in pairs(entities) do
-      if entity.update then entity.update(dt) end
+      if entity.update then entity:update(dt) end
     end
     spawn()
   end
 end
 
 function spawn()
-  if math.random(0,100)>(99-0.1*score) then
-    local ennemy = {}
-    ennemy.name = "ennemy"
-    ennemy.x = math.random(0,width)
-    ennemy.y = math.random(height/2,height)
-    ennemy.angle = math.random(0,360)
-    ennemy.speed = 100+0.1*score
-    ennemy.anglespeed = 20+0.001*score
-    ennemy.timer = 0
-    ennemy.track = true
-    ennemy.rot = math.random()>0.5
-    ennemy.update = function (dt)
-      ennemy.timer = ennemy.timer + dt
-      if ennemy.timer > 5 then
+  for p, param in pairs(spawns) do
+    if score > param.start and score < param.stop then
+      if math.random(0,100)>100-param.frequency then
+        local ennemy = {}
+        ennemy.x = math.random(param.xmin,param.xmax)
+        ennemy.y = math.random(param.ymin,param.ymax)
+        ennemy.angle = math.random(param.anglemin,param.anglemax)
+        ennemy.speed = param.speed
+        ennemy.anglespeed = param.anglespeed
+        ennemy.update = param.update
+        ennemy.draw = param.draw
         ennemy.timer = 0
-        ennemy.track = math.random()>0.5
-      end
-      if ennemy.track then
-        objectiveAngle = 180 + math.deg(math.atan2((ennemy.y-diver.y),(ennemy.x - diver.x)))
-        if math.abs(ennemy.angle-objectiveAngle) < 180 then
-          ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and 1 or -1))%360
-        else
-          ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and -1 or 1))%360
-        end
-      else
-        if ennemy.rot then
-          ennemy.angle = (ennemy.angle + dt*ennemy.anglespeed) % 360
-        else
-          ennemy.angle = (ennemy.angle - dt*ennemy.anglespeed) % 360
-        end
-      end
-      ennemy.x = ennemy.x+ ennemy.speed*math.cos(math.rad(ennemy.angle))*dt
-      ennemy.y = ennemy.y+ ennemy.speed*math.sin(math.rad(ennemy.angle))*dt
-      if touched(ennemy,shield) or ennemy.y < 0 then
-        removeEntity(ennemy)
-      end
-      if touched(ennemy, diver) then
-        --Perdu
-        --gameover = true
+        table.insert(entities,ennemy)
       end
     end
-    table.insert(entities,ennemy)
   end
 end
 
@@ -151,4 +120,99 @@ end
 
 function love.mousereleased(x, y, button, isTouch)
   shield:mousereleased(x,y,button,isTouch)
+end
+
+function paramEnnemyGeneration()
+  spawns =
+  {
+    fish =
+    {
+      start = 0,stop = 200,
+      frequency = 3,
+      xmin = 0, xmax = width,
+      ymin = height/2, ymax = height,
+      anglemin=0, anglemax = 360,
+      speed = 100, anglespeed = 20,
+      update = function (ennemy, dt)
+        ennemy.timer = ennemy.timer + dt
+        if ennemy.timer > 5 then
+          ennemy.timer = 0
+          ennemy.track = math.random()>0.5
+        end
+        if ennemy.track then
+          objectiveAngle = 180 + math.deg(math.atan2((ennemy.y-diver.y),(ennemy.x - diver.x)))
+          if math.abs(ennemy.angle-objectiveAngle) < 180 then
+            ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and 1 or -1))%360
+          else
+            ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and -1 or 1))%360
+          end
+        else
+          if ennemy.rot == nil then ennemy.rot = math.random()>0.5 end
+          if ennemy.rot then
+            ennemy.angle = (ennemy.angle + dt*ennemy.anglespeed) % 360
+          else
+            ennemy.angle = (ennemy.angle - dt*ennemy.anglespeed) % 360
+          end
+        end
+        ennemy.x = ennemy.x+ ennemy.speed*math.cos(math.rad(ennemy.angle))*dt
+        ennemy.y = ennemy.y+ ennemy.speed*math.sin(math.rad(ennemy.angle))*dt
+        if touched(ennemy,shield) or ennemy.y < 0 then
+          removeEntity(ennemy)
+        end
+        if touched(ennemy, diver) then
+          --Perdu
+          --gameover = true
+        end
+      end,
+      draw = function (entity)
+        love.graphics.setColor(0,0,0)
+        love.graphics.polygon("fill", entity.x+30*math.cos(math.rad(entity.angle)), entity.y + 30*math.sin(math.rad(entity.angle)), entity.x+ 30*math.cos(math.rad(entity.angle+120)), entity.y+30*math.sin(math.rad(entity.angle+120)), entity.x+30*math.cos(math.rad(entity.angle-120)), entity.y+30*math.sin(math.rad(entity.angle-120)))
+      end
+    },
+    shark =
+    {
+      start = 200,stop = 1000,
+      frequency = 1,
+      xmin = 0, xmax = width,
+      ymin = 3*height/4, ymax = height,
+      anglemin=0, anglemax = 360,
+      speed = 200, anglespeed = 30,
+      update = function (ennemy, dt)
+        ennemy.timer = ennemy.timer + dt
+        if ennemy.timer > 5 then
+          ennemy.timer = 0
+          ennemy.track = true
+        end
+        if ennemy.track then
+          objectiveAngle = 180 + math.deg(math.atan2((ennemy.y-diver.y),(ennemy.x - diver.x)))
+          if math.abs(ennemy.angle-objectiveAngle) < 180 then
+            ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and 1 or -1))%360
+          else
+            ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and -1 or 1))%360
+          end
+        else
+          if ennemy.rot == nil then ennemy.rot = math.random()>0.5 end
+          if ennemy.rot then
+            ennemy.angle = (ennemy.angle + dt*ennemy.anglespeed) % 360
+          else
+            ennemy.angle = (ennemy.angle - dt*ennemy.anglespeed) % 360
+          end
+        end
+        ennemy.x = ennemy.x+ ennemy.speed*math.cos(math.rad(ennemy.angle))*dt
+        ennemy.y = ennemy.y+ ennemy.speed*math.sin(math.rad(ennemy.angle))*dt
+        if touched(ennemy,shield) or ennemy.y < 0 then
+          removeEntity(ennemy)
+        end
+        if touched(ennemy, diver) then
+          --Perdu
+          --gameover = true
+        end
+      end,
+      draw = function (entity)
+        love.graphics.setColor(0.3,0,0)
+        love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
+      end
+    }
+  }
+
 end

@@ -11,7 +11,7 @@ local Shield = {}
     shield.handled = false
 
 
-    function shield.update(dt)
+    function shield:update(dt)
       if shield.vel ~= nil then
         shield.x = shield.x + shield.vel.velx/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
         shield.y = shield.y + shield.vel.vely/math.sqrt(math.pow(shield.vel.velx,2)+math.pow(shield.vel.vely,2)) * shield.speed * dt
