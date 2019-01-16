@@ -212,6 +212,94 @@ function paramEnnemyGeneration()
         love.graphics.setColor(0.3,0,0)
         love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
       end
+    },
+    turtle =
+    {
+      start = 0,stop = 1000,
+      frequency = 1,
+      xmin = width, xmax = width,
+      ymin = 0, ymax = height,
+      anglemin=180, anglemax = 180,
+      speed = 200, anglespeed = 0,
+      update = function (ennemy, dt)
+        ennemy.timer = ennemy.timer + dt
+        if ennemy.timer > 5 then
+          ennemy.timer = 0
+          ennemy.track = true
+        end
+        if ennemy.track then
+          objectiveAngle = 180 + math.deg(math.atan2((ennemy.y-diver.y),(ennemy.x - diver.x)))
+          if math.abs(ennemy.angle-objectiveAngle) < 180 then
+            ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and 1 or -1))%360
+          else
+            ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and -1 or 1))%360
+          end
+        else
+          if ennemy.rot == nil then ennemy.rot = math.random()>0.5 end
+          if ennemy.rot then
+            ennemy.angle = (ennemy.angle + dt*ennemy.anglespeed) % 360
+          else
+            ennemy.angle = (ennemy.angle - dt*ennemy.anglespeed) % 360
+          end
+        end
+        ennemy.x = ennemy.x+ ennemy.speed*math.cos(math.rad(ennemy.angle))*dt
+        ennemy.y = ennemy.y+ ennemy.speed*math.sin(math.rad(ennemy.angle))*dt
+        if touched(ennemy,shield) or ennemy.y < 0 then
+          removeEntity(ennemy)
+        end
+        if touched(ennemy, diver) then
+          --Perdu
+          --gameover = true
+        end
+      end,
+      draw = function (entity)
+        love.graphics.setColor(0,1,0)
+        love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
+      end
+    },
+    meduse =
+    {
+      start = 0,stop = 1000,
+      frequency = 1,
+      xmin = 0, xmax = width,
+      ymin = height, ymax = height,
+      anglemin=270, anglemax = 270,
+      speed = 200, anglespeed = 0,
+      update = function (ennemy, dt)
+        ennemy.timer = ennemy.timer + dt
+        if ennemy.timer > 5 then
+          ennemy.timer = 0
+          ennemy.track = true
+        end
+        if ennemy.track then
+          objectiveAngle = 180 + math.deg(math.atan2((ennemy.y-diver.y),(ennemy.x - diver.x)))
+          if math.abs(ennemy.angle-objectiveAngle) < 180 then
+            ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and 1 or -1))%360
+          else
+            ennemy.angle =  (ennemy.angle + dt*ennemy.anglespeed*(ennemy.angle<objectiveAngle and -1 or 1))%360
+          end
+        else
+          if ennemy.rot == nil then ennemy.rot = math.random()>0.5 end
+          if ennemy.rot then
+            ennemy.angle = (ennemy.angle + dt*ennemy.anglespeed) % 360
+          else
+            ennemy.angle = (ennemy.angle - dt*ennemy.anglespeed) % 360
+          end
+        end
+        ennemy.x = ennemy.x+ ennemy.speed*math.cos(math.rad(ennemy.angle))*dt
+        ennemy.y = ennemy.y+ ennemy.speed*math.sin(math.rad(ennemy.angle))*dt
+        if touched(ennemy,shield) or ennemy.y < 0 then
+          removeEntity(ennemy)
+        end
+        if touched(ennemy, diver) then
+          --Perdu
+          --gameover = true
+        end
+      end,
+      draw = function (entity)
+        love.graphics.setColor(0,0.5,1)
+        love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
+      end
     }
   }
 
