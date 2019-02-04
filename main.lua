@@ -8,7 +8,7 @@ entities = {}
 gameover = false
 
 score = 190
-wasted = love.graphics.newImage("img/wasted.jpg")
+wasted = love.graphics.newImage("img/wasted.png")
 
 ----
 ----
@@ -57,7 +57,7 @@ end
 
 function gameoverdraw()
   love.graphics.setColor(1, 1, 1, 1)
-  love.graphics.draw(wasted, width/2 - (wasted:getWidth())/2, height/2 - (wasted:getHeight())/2,0,1,1)
+  love.graphics.draw(wasted, width/2 - (wasted:getWidth()), height/2 - (wasted:getHeight()),0,2,2)
 end
 
 function love.update(dt)
@@ -84,6 +84,7 @@ function spawn()
         ennemy.update = param.update
         ennemy.draw = param.draw
         ennemy.timer = 0
+        ennemy.switch = param.switch
         table.insert(entities,ennemy)
       end
     end
@@ -132,7 +133,7 @@ function paramEnnemyGeneration()
   {
     fish =
     {
-      start = 0,stop = 1,
+      start = 0,stop = 100,
       frequency = 3,
       xmin = 0, xmax = width,
       ymin = height/2, ymax = height,
@@ -303,6 +304,40 @@ function paramEnnemyGeneration()
       end,
       draw = function (entity)
         love.graphics.setColor(0,0.5,1)
+        love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
+      end
+    },
+
+    globeFish =
+    {
+      start = 0,stop = 1000,
+      frequency = 1,
+      xmin = 0, xmax = width,
+      ymin = height, ymax = height,
+      anglemin=200, anglemax = 340,
+      speed = 200, anglespeed = 1, switch = 1,
+
+      update = function (ennemy, dt)
+
+        if ennemy.angle > 350 or ennemy.angle < 190 then
+          ennemy.switch = ennemy.switch * -1
+        end
+
+        ennemy.angle = ennemy.angle + ennemy.switch
+
+        ennemy.x = ennemy.x+ ennemy.speed*math.cos(math.rad(ennemy.angle))*dt
+        ennemy.y = ennemy.y+ ennemy.speed*math.sin(math.rad(ennemy.angle))*dt
+
+        if touched(ennemy,shield) or ennemy.y < 0 then
+          removeEntity(ennemy)
+        end
+        if touched(ennemy, diver) then
+          --Perdu
+          gameover = true
+        end
+      end,
+      draw = function (entity)
+        love.graphics.setColor(1,0.5,1)
         love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
       end
     }
