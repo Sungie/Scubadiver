@@ -7,7 +7,7 @@ entities = {}
 
 gameover = false
 
-score = 190
+score = 0
 wasted = love.graphics.newImage("img/wasted.png")
 
 ----
@@ -44,6 +44,7 @@ end
 
 function love.draw()
   printBG()
+  love.graphics.setColor(1, 0, 0, 1)
   love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
   for i, entity in pairs(entities) do
     if entity.draw  then
@@ -79,12 +80,13 @@ function spawn()
         ennemy.x = math.random(param.xmin,param.xmax)
         ennemy.y = math.random(param.ymin,param.ymax)
         ennemy.angle = math.random(param.anglemin,param.anglemax)
-        ennemy.speed = param.speed
+        ennemy.speed = param.speed + score/10
         ennemy.anglespeed = param.anglespeed
         ennemy.update = param.update
         ennemy.draw = param.draw
         ennemy.timer = 0
         ennemy.switch = param.switch
+        ennemy.size = param.size
         table.insert(entities,ennemy)
       end
     end
@@ -128,13 +130,15 @@ function love.mousereleased(x, y, button, isTouch)
   shield:mousereleased(x,y,button,isTouch)
 end
 
+
+--------------------------------------------------------------------------------
 function paramEnnemyGeneration()
   spawns =
   {
     fish =
     {
-      start = 0,stop = 100,
-      frequency = 3,
+      start = 0,stop = 1000,
+      frequency = 2,
       xmin = 0, xmax = width,
       ymin = height/2, ymax = height,
       anglemin=0, anglemax = 360,
@@ -165,7 +169,7 @@ function paramEnnemyGeneration()
         if touched(ennemy,shield) or ennemy.y < 0 then
           removeEntity(ennemy)
         end
-        if touched(ennemy, diver, ennemy.size) then
+        if touched(ennemy, diver, size) then
           --Perdu
           gameover = true
         end
@@ -310,17 +314,18 @@ function paramEnnemyGeneration()
 
     globeFish =
     {
-      start = 0,stop = 1000,
+      start = 100,stop = 1000,
       frequency = 1,
       xmin = 0, xmax = width,
       ymin = height, ymax = height,
       anglemin=200, anglemax = 340,
-      speed = 200, anglespeed = 1, switch = 1,
+      speed = 200, anglespeed = 1, switch = 1,size = 2,
 
       update = function (ennemy, dt)
 
         if ennemy.angle > 350 or ennemy.angle < 190 then
           ennemy.switch = ennemy.switch * -1
+          ennemy.size = ennemy.size + ennemy.switch
         end
 
         ennemy.angle = ennemy.angle + ennemy.switch
@@ -338,7 +343,7 @@ function paramEnnemyGeneration()
       end,
       draw = function (entity)
         love.graphics.setColor(1,0.5,1)
-        love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
+        love.graphics.polygon("fill", entity.x+(entity.size*20)*math.cos(math.rad(entity.angle)), entity.y + (entity.size*20)*math.sin(math.rad(entity.angle) ), entity.x+ (entity.size*20)*math.cos(math.rad(entity.angle+120)), entity.y+(entity.size*20)*math.sin(math.rad(entity.angle+120)), entity.x+(entity.size*20)*math.cos(math.rad(entity.angle-120)), entity.y+(entity.size*20)*math.sin(math.rad(entity.angle-120)))
       end
     }
   }
