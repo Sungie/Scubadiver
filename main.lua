@@ -9,7 +9,7 @@ gameover = false
 
 score = 0
 wasted = love.graphics.newImage("img/wasted.png")
-
+ocean = love.graphics.newImage("img/ocean.jpg")
 ----
 ----
 
@@ -26,23 +26,11 @@ function love.load()
 end
 
 function printBG()
-  local x = 18
-  for i = 0, x do
-  --  love.graphics.setColor(1/i,1/i,1/i)
-    love.graphics.setColor(1,1,1)
-
-    love.graphics.rectangle("fill", 0,(-(((score)%x)-i)*height), width, height)
-  end
-  -- love.graphics.setColor(0,1,0.5)
-  -- love.graphics.rectangle("fill", 0,0, width, height)
-  -- love.graphics.rectangle("fill", 0,((((score)%3))*height), width, height)
-  -- love.graphics.setColor(1,0.5,0)
-  -- love.graphics.rectangle("fill", 0,((((score)%3)-1)*height), width, height)
-  -- love.graphics.setColor(0.5,0,1)
-  -- love.graphics.rectangle("fill", 0,((((score)%3)-2)*height), width, height)
+  love.graphics.draw(ocean, 0, -100*score, 0, width/ocean:getWidth(), 4*height/ocean:getHeight())
 end
 
 function love.draw()
+  love.graphics.setColor(1, 1, 1, 1)
   printBG()
   love.graphics.setColor(1, 0, 0, 1)
   love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
