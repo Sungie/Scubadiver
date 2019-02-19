@@ -186,7 +186,7 @@ function paramEnnemyGeneration()
     },
     shark =
     {
-      start = 200,stop = 1000,
+      start = 0,stop = 1000,
       frequency = 1,
       xmin = 0, xmax = width,
       ymin = 3*height/4, ymax = height,
@@ -224,8 +224,9 @@ function paramEnnemyGeneration()
         end
       end,
       draw = function (entity)
-        love.graphics.setColor(0.3,0,0)
-        love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
+        love.graphics.setColor(1,1,1)
+        local shark = love.graphics.newImage("img/shark.png")
+        love.graphics.draw(shark, entity.x, entity.y, math.rad(entity.angle), 1, 1)      --  love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
       end
     },
     turtle =

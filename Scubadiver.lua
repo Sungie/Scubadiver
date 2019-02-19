@@ -20,7 +20,7 @@ local Scubadiver = {}
     function scubadiver:draw()
       love.graphics.setColor(1,1,1)
       --Hitbox
-      love.graphics.rectangle("fill", self.x - (self.width/2), self.y - (self.height/2), self.width, self.height)
+      --love.graphics.rectangle("fill", self.x - (self.width/2), self.y - (self.height/2), self.width, self.height)
       --love.graphics.draw(scubadiver.img, self.x - (self.width/2), self.y - (self.height/2), 0, 2, 2, 0 ,0)
       local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
       love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum],self.x - (self.width/2), self.y - (self.height/2) - 10, 0, 3,3)
