@@ -1,7 +1,7 @@
 local Scubadiver = {}
   function Scubadiver:new()
     local scubadiver = {}
-    scubadiver.img = love.graphics.newImage("img/Nageur.png")
+    scubadiver.img = love.graphics.newImage("img/scubadiver.png")
     scubadiver.name = "diver"
     scubadiver.x = width/2
     scubadiver.y = 50
@@ -19,10 +19,11 @@ local Scubadiver = {}
 
     function scubadiver:draw()
       love.graphics.setColor(1,1,1)
+      --Hitbox
       love.graphics.rectangle("fill", self.x - (self.width/2), self.y - (self.height/2), self.width, self.height)
       --love.graphics.draw(scubadiver.img, self.x - (self.width/2), self.y - (self.height/2), 0, 2, 2, 0 ,0)
       local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-      love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum],self.x - (self.width/2), self.y - (self.height/2), 0, 3,3)
+      love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum],self.x - (self.width/2), self.y - (self.height/2) - 10, 0, 3,3)
     end
 
 
