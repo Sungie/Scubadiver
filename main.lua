@@ -23,6 +23,8 @@ function love.load()
   table.insert(entities, shield)
   table.insert(entities, diver)
   paramEnnemyGeneration()
+  globefishAnimation = newAnimation(love.graphics.newImage("img/globefish.png"), 32, 32,1)
+
 end
 
 function printBG()
@@ -269,8 +271,12 @@ function paramEnnemyGeneration()
         end
       end,
       draw = function (entity)
-        love.graphics.setColor(0,1,0)
-        love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
+        love.graphics.setColor(1,1,1)
+        local turtle = love.graphics.newImage("img/turtle.png")
+        love.graphics.draw(turtle, entity.x, entity.y, math.rad(entity.angle), 1, 1)
+        --  love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
+
+        --love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
       end
     },
     meduse =
@@ -313,19 +319,21 @@ function paramEnnemyGeneration()
         end
       end,
       draw = function (entity)
-        love.graphics.setColor(0,0.5,1)
-        love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
+        love.graphics.setColor(1,1,1)
+        local meduse = love.graphics.newImage("img/meduse.png")
+        love.graphics.draw(meduse, entity.x, entity.y, math.rad(entity.angle), 1, 1)
+        --love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
       end
     },
 
     globeFish =
     {
-      start = 100,stop = 1000,
+      start = 0,stop = 1000,
       frequency = 1,
       xmin = 0, xmax = width,
       ymin = height, ymax = height,
       anglemin=200, anglemax = 340,
-      speed = 200, anglespeed = 1, switch = 1,size = 2,
+      speed = 200, anglespeed = 1, switch = 1,size = 50,
 
       update = function (ennemy, dt)
 
@@ -348,8 +356,13 @@ function paramEnnemyGeneration()
         end
       end,
       draw = function (entity)
-        love.graphics.setColor(1,0.5,1)
-        love.graphics.polygon("fill", entity.x+(entity.size*20)*math.cos(math.rad(entity.angle)), entity.y + (entity.size*20)*math.sin(math.rad(entity.angle) ), entity.x+ (entity.size*20)*math.cos(math.rad(entity.angle+120)), entity.y+(entity.size*20)*math.sin(math.rad(entity.angle+120)), entity.x+(entity.size*20)*math.cos(math.rad(entity.angle-120)), entity.y+(entity.size*20)*math.sin(math.rad(entity.angle-120)))
+        --love.graphics.draw(globefish, entity.x, entity.y, math.rad(entity.angle), 1, 1)
+        if entity.switch == 1 then
+          love.graphics.draw(globefishAnimation.spriteSheet, globefishAnimation.quads[2],entity.x, entity.y, 0, 1,1)
+        else
+          love.graphics.draw(globefishAnimation.spriteSheet, globefishAnimation.quads[1],entity.x, entity.y, 0, 1,1)
+        end
+        --love.graphics.polygon("fill", entity.x+(entity.size*20)*math.cos(math.rad(entity.angle)), entity.y + (entity.size*20)*math.sin(math.rad(entity.angle) ), entity.x+ (entity.size*20)*math.cos(math.rad(entity.angle+120)), entity.y+(entity.size*20)*math.sin(math.rad(entity.angle+120)), entity.x+(entity.size*20)*math.cos(math.rad(entity.angle-120)), entity.y+(entity.size*20)*math.sin(math.rad(entity.angle-120)))
       end
     }
   }
