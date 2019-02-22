@@ -6,7 +6,7 @@ local Shield = {}
     shield.x = width/2
     shield.y = 500
     shield.vel = nil
-    shield.radius = 30
+    shield.radius = 25
     shield.speed = 500
     shield.handled = false
 

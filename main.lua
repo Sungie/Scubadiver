@@ -12,8 +12,7 @@ wasted = love.graphics.newImage("img/wasted.png")
 ocean = love.graphics.newImage("img/ocean.jpg")
 ----
 ----
-
-function love.load()
+ function love.load()
   love.window.setFullscreen(true)
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
@@ -38,7 +37,12 @@ function love.draw()
   love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
   for i, entity in pairs(entities) do
     if entity.draw  then
-      entity:draw()
+
+      love.graphics.setColor(1, 0, 0, 1)
+      if entity.name == "shield" then else
+      love.graphics.circle("fill", entity.x, entity.y, 25) end
+        entity:draw()
+
     end
   end
   if gameover then
@@ -176,7 +180,7 @@ function paramEnnemyGeneration()
         end
         if touched(ennemy, diver, size) then
           --Perdu
-          gameover = true
+          --gameover = true
         end
       end,
       draw = function (entity)
@@ -228,7 +232,8 @@ function paramEnnemyGeneration()
       draw = function (entity)
         love.graphics.setColor(1,1,1)
         local shark = love.graphics.newImage("img/shark.png")
-        love.graphics.draw(shark, entity.x, entity.y, math.rad(entity.angle), 1, 1)      --  love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
+        love.graphics.draw(shark, entity.x, entity.y, math.rad(entity.angle), 1, 1)
+         --  love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
       end
     },
     turtle =
@@ -265,7 +270,7 @@ function paramEnnemyGeneration()
         if touched(ennemy,shield) or ennemy.y < 0 then
           removeEntity(ennemy)
         end
-        if touched(ennemy, diver, 40) then
+        if touched(ennemy, diver) then
           --Perdu
           gameover = true
         end
@@ -273,10 +278,9 @@ function paramEnnemyGeneration()
       draw = function (entity)
         love.graphics.setColor(1,1,1)
         local turtle = love.graphics.newImage("img/turtle.png")
-        love.graphics.draw(turtle, entity.x, entity.y, math.rad(entity.angle), 1, 1)
+        love.graphics.draw(turtle, entity.x + turtle:getWidth()/2, entity.y+turtle:getHeight()/2, math.rad(entity.angle), 1, 1)
         --  love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
 
-        --love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
       end
     },
     meduse =
@@ -321,7 +325,7 @@ function paramEnnemyGeneration()
       draw = function (entity)
         love.graphics.setColor(1,1,1)
         local meduse = love.graphics.newImage("img/meduse.png")
-        love.graphics.draw(meduse, entity.x, entity.y, math.rad(entity.angle), 1, 1)
+        love.graphics.draw(meduse, entity.x + meduse:getWidth()/2, entity.y + meduse:getHeight()/2, math.rad(entity.angle), 1, 1)
         --love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
       end
     },
@@ -333,13 +337,12 @@ function paramEnnemyGeneration()
       xmin = 0, xmax = width,
       ymin = height, ymax = height,
       anglemin=200, anglemax = 340,
-      speed = 200, anglespeed = 1, switch = 1,size = 50,
+      speed = 200, anglespeed = 1, switch = 1,
 
       update = function (ennemy, dt)
 
         if ennemy.angle > 350 or ennemy.angle < 190 then
           ennemy.switch = ennemy.switch * -1
-          ennemy.size = ennemy.size + ennemy.switch
         end
 
         ennemy.angle = ennemy.angle + ennemy.switch
@@ -358,13 +361,12 @@ function paramEnnemyGeneration()
       draw = function (entity)
         --love.graphics.draw(globefish, entity.x, entity.y, math.rad(entity.angle), 1, 1)
         if entity.switch == 1 then
-          love.graphics.draw(globefishAnimation.spriteSheet, globefishAnimation.quads[2],entity.x, entity.y, 0, 1,1)
+          love.graphics.draw(globefishAnimation.spriteSheet, globefishAnimation.quads[2],entity.x + (globefishAnimation.spriteSheet:getHeight()-32)/2 , entity.y  + (globefishAnimation.spriteSheet:getWidth()-32)/2 , 0, 1,1)
         else
-          love.graphics.draw(globefishAnimation.spriteSheet, globefishAnimation.quads[1],entity.x, entity.y, 0, 1,1)
+          love.graphics.draw(globefishAnimation.spriteSheet, globefishAnimation.quads[1],entity.x  + (globefishAnimation.spriteSheet:getHeight()-32)/2 , entity.y  + (globefishAnimation.spriteSheet:getWidth()-32)/2 , 0, 1,1)
         end
         --love.graphics.polygon("fill", entity.x+(entity.size*20)*math.cos(math.rad(entity.angle)), entity.y + (entity.size*20)*math.sin(math.rad(entity.angle) ), entity.x+ (entity.size*20)*math.cos(math.rad(entity.angle+120)), entity.y+(entity.size*20)*math.sin(math.rad(entity.angle+120)), entity.x+(entity.size*20)*math.cos(math.rad(entity.angle-120)), entity.y+(entity.size*20)*math.sin(math.rad(entity.angle-120)))
       end
     }
   }
-
 end
