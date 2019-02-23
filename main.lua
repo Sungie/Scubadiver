@@ -85,7 +85,7 @@ function spawn()
         ennemy.draw = param.draw
         ennemy.timer = 0
         ennemy.switch = param.switch
-        ennemy.size = param.size
+        ennemy.size = param.size and 1 or 25
         ennemy.img = param.img
         table.insert(entities,ennemy)
       end
@@ -191,7 +191,7 @@ function paramEnnemyGeneration()
       end,
       draw = function (entity)
         love.graphics.setColor(1,1,1)
-        love.graphics.draw(entity.img, entity.x, entity.y, math.rad(entity.angle), 1, 1, entity.img:getWidth()/2, entity.img:getHeight()/2)
+        love.graphics.draw(entity.img, entity.x, entity.y, math.rad(entity.angle), 2, 2, entity.img:getWidth()/2, entity.img:getHeight()/2)
         --love.graphics.polygon("fill", entity.x+30*math.cos(math.rad(entity.angle)), entity.y + 30*math.sin(math.rad(entity.angle)), entity.x+ 30*math.cos(math.rad(entity.angle+120)), entity.y+30*math.sin(math.rad(entity.angle+120)), entity.x+30*math.cos(math.rad(entity.angle-120)), entity.y+30*math.sin(math.rad(entity.angle-120)))
       end
     },
@@ -281,7 +281,7 @@ function paramEnnemyGeneration()
       end,
       draw = function (entity)
         love.graphics.setColor(1,1,1)
-        love.graphics.draw(entity.img, entity.x, entity.y, math.rad(entity.angle), 1, 1, entity.img:getWidth()/2, entity.img:getHeight()/2)
+        love.graphics.draw(entity.img, entity.x, entity.y, math.rad(entity.angle), 2, 2, entity.img:getWidth()/2, entity.img:getHeight()/2)
         --love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
 
       end
@@ -327,7 +327,7 @@ function paramEnnemyGeneration()
       end,
       draw = function (entity)
         love.graphics.setColor(1,1,1)
-        love.graphics.draw(entity.img, entity.x , entity.y, math.rad(entity.angle), 1, 1, entity.img:getWidth()/2, entity.img:getHeight()/2)
+        love.graphics.draw(entity.img, entity.x , entity.y, math.rad(entity.angle), 2, 2, entity.img:getWidth()/2, entity.img:getHeight()/2)
         --love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
       end
     },
@@ -335,7 +335,7 @@ function paramEnnemyGeneration()
     globeFish =
     {
       start = 0,stop = 1000,
-      frequency = 10,
+      frequency = 1,
       xmin = 0, xmax = width,
       ymin = height, ymax = height,
       anglemin=200, anglemax = 340,
@@ -363,7 +363,7 @@ function paramEnnemyGeneration()
       draw = function (entity)
         love.graphics.setColor(1, 1, 1, 1)
         if entity.switch == 1 then
-          love.graphics.draw(entity.img.spriteSheet, entity.img.quads[2],entity.x, entity.y, math.rad(entity.angle), 1,1, entity.img.spriteSheet:getWidth()/2,16)--, entity.img.spriteSheet:getHeight()/2)
+          love.graphics.draw(entity.img.spriteSheet, entity.img.quads[2],entity.x, entity.y, math.rad(entity.angle), 2,2, entity.img.spriteSheet:getWidth()/2,16)--, entity.img.spriteSheet:getHeight()/2)
         else
           love.graphics.draw(entity.img.spriteSheet, entity.img.quads[1],entity.x, entity.y, math.rad(entity.angle), 1,1, entity.img.spriteSheet:getWidth()/2,16)--, entity.img.spriteSheet:getHeight()/2)
         end
