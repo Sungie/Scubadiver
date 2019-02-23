@@ -44,7 +44,7 @@ function love.draw()
   for i, entity in pairs(entities) do
     if entity.draw  then
       --draw hitbox red circle
-      --if entity.name == "shield" then else love.graphics.setColor(1, 0, 0, 1) love.graphics.circle("fill", entity.x, entity.y, 25) end
+      if entity.name == "shield" then else love.graphics.setColor(1, 0, 0, 1) love.graphics.circle("fill", entity.x, entity.y, 25) end
 
         entity:draw()
     end
@@ -63,7 +63,7 @@ function gameoverdraw()
 end
 
 function love.update(dt)
-  gameover = false
+  --gameover = false
   if not gameover then
   --gameloop
     score = score + dt
@@ -196,7 +196,7 @@ function paramEnnemyGeneration()
         if touched(ennemy,shield) or ennemy.y < 0 then
           removeEntity(ennemy)
         end
-        if touched(ennemy, diver, size) then
+        if touched(ennemy, diver) then
           --Perdu
           gameover = true
         end
@@ -250,7 +250,7 @@ function paramEnnemyGeneration()
       draw = function (entity)
         love.graphics.setColor(1,1,1)
         local spriteNum = math.floor(entity.animation.currentTime / entity.animation.duration * #entity.animation.quads) + 1
-        love.graphics.draw(entity.animation.spriteSheet, entity.animation.quads[spriteNum], entity.x - (entity.img:getWidth()/2), entity.y - (entity.img:getHeight()/2), math.rad(entity.angle), 2,2)
+        love.graphics.draw(entity.animation.spriteSheet, entity.animation.quads[spriteNum], entity.x , entity.y , math.rad(entity.angle), 2,2, entity.img:getWidth()/4, entity.img:getHeight()/2)
         --love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
       end
     },
@@ -259,7 +259,7 @@ function paramEnnemyGeneration()
       start = 0,stop = 1000,
       frequency = 1,
       xmin = width, xmax = width,
-      ymin = 0, ymax = height/3,
+      ymin = 32, ymax = height/3,
       anglemin=180, anglemax = 180, size = 32,
       speed = 200, anglespeed = 0,img = love.graphics.newImage("img/turtleF.png"),
       animation = {time = 2},
@@ -298,7 +298,7 @@ function paramEnnemyGeneration()
         love.graphics.setColor(1,1,1)
         --love.graphics.draw(entity.img, entity.x, entity.y, math.rad(entity.angle), 2, 2, entity.img:getWidth()/2, entity.img:getHeight()/2)
         local spriteNum = math.floor(entity.animation.currentTime / entity.animation.duration * #entity.animation.quads) + 1
-        love.graphics.draw(entity.animation.spriteSheet, entity.animation.quads[spriteNum], entity.x - (entity.img:getWidth()/2), entity.y - (entity.img:getHeight()/2),  math.rad(entity.angle), 2,2)
+        love.graphics.draw(entity.animation.spriteSheet, entity.animation.quads[spriteNum], entity.x, entity.y,  math.rad(entity.angle), 2,2, entity.img:getWidth()/4, entity.img:getHeight()/2)
 
         --love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
 
