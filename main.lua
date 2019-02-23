@@ -41,12 +41,10 @@ function love.draw()
   love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
   for i, entity in pairs(entities) do
     if entity.draw  then
+      --draw hitbox red circle
+      --if entity.name == "shield" then else love.graphics.setColor(1, 0, 0, 1) love.graphics.circle("fill", entity.x, entity.y, 25) end
 
-      love.graphics.setColor(1, 0, 0, 1)
-      if entity.name == "shield" then else
-      love.graphics.circle("fill", entity.x, entity.y, 25) end
         entity:draw()
-
     end
   end
   if gameover then
@@ -66,8 +64,16 @@ function love.update(dt)
     score = score + dt
     for i, entity in pairs(entities) do
       if entity.update then entity:update(dt) end
+      if entity.animation then
+        entity.animation.currentTime = entity.animation.currentTime + dt
+        if entity.animation.currentTime >= entity.animation.duration then
+            entity.animation.currentTime = entity.animation.currentTime - entity.animation.duration
+        end
+      end
     end
     spawn()
+
+
   end
 end
 
@@ -87,6 +93,7 @@ function spawn()
         ennemy.switch = param.switch
         ennemy.size = param.size and 1 or 25
         ennemy.img = param.img
+        if param.animation then ennemy.animation = newAnimation(param.img, param.size, param.size, animation.time) end
         table.insert(entities,ennemy)
       end
     end
@@ -201,8 +208,9 @@ function paramEnnemyGeneration()
       frequency = 1,
       xmin = 0, xmax = width,
       ymin = 3*height/4, ymax = height,
-      anglemin=0, anglemax = 360,
-      speed = 200, anglespeed = 30, img = love.graphics.newImage("img/shark.png"),
+      anglemin=0, anglemax = 360, size = 64,
+      speed = 200, anglespeed = 30, img = love.graphics.newImage("img/sharkF.png"),
+      animation = {time=1},
       update = function (ennemy, dt)
         ennemy.timer = ennemy.timer + dt
         if ennemy.timer > 5 then
@@ -236,7 +244,8 @@ function paramEnnemyGeneration()
       end,
       draw = function (entity)
         love.graphics.setColor(1,1,1)
-        love.graphics.draw(entity.img, entity.x , entity.y , math.rad(entity.angle), 1, 1, entity.img:getWidth()/2, entity.img:getHeight()/2)
+        local spriteNum = math.floor(entity.animation.currentTime / entity.animation.duration * #entity.animation.quads) + 1
+        love.graphics.draw(entity.animation.spriteSheet, entity.animation.quads[spriteNum], entity.x - (entity.img:getWidth()/2), entity.y - (entity.img:getHeight()/2), math.rad(entity.angle), 2,2)
         --love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
       end
     },
@@ -245,9 +254,10 @@ function paramEnnemyGeneration()
       start = 0,stop = 1000,
       frequency = 1,
       xmin = width, xmax = width,
-      ymin = 0, ymax = height,
-      anglemin=180, anglemax = 180,
-      speed = 200, anglespeed = 0,img = love.graphics.newImage("img/turtle.png"),
+      ymin = 0, ymax = height/3,
+      anglemin=180, anglemax = 180, size = 32,
+      speed = 200, anglespeed = 0,img = love.graphics.newImage("img/turtleF.png"),
+      animation = {time = 2},
       update = function (ennemy, dt)
         ennemy.timer = ennemy.timer + dt
         if ennemy.timer > 5 then
@@ -281,7 +291,10 @@ function paramEnnemyGeneration()
       end,
       draw = function (entity)
         love.graphics.setColor(1,1,1)
-        love.graphics.draw(entity.img, entity.x, entity.y, math.rad(entity.angle), 2, 2, entity.img:getWidth()/2, entity.img:getHeight()/2)
+        --love.graphics.draw(entity.img, entity.x, entity.y, math.rad(entity.angle), 2, 2, entity.img:getWidth()/2, entity.img:getHeight()/2)
+        local spriteNum = math.floor(entity.animation.currentTime / entity.animation.duration * #entity.animation.quads) + 1
+        love.graphics.draw(entity.animation.spriteSheet, entity.animation.quads[spriteNum], entity.x - (entity.img:getWidth()/2), entity.y - (entity.img:getHeight()/2),  math.rad(entity.angle), 2,2)
+
         --love.graphics.polygon("fill", entity.x+50*math.cos(math.rad(entity.angle)), entity.y + 50*math.sin(math.rad(entity.angle)), entity.x+ 50*math.cos(math.rad(entity.angle+120)), entity.y+50*math.sin(math.rad(entity.angle+120)), entity.x+50*math.cos(math.rad(entity.angle-120)), entity.y+50*math.sin(math.rad(entity.angle-120)))
 
       end
@@ -291,9 +304,10 @@ function paramEnnemyGeneration()
       start = 0,stop = 1000,
       frequency = 1,
       xmin = 0, xmax = width,
-      ymin = height, ymax = height,
+      ymin = height, ymax = height, size = 32,
       anglemin=270, anglemax = 270,
-      speed = 200, anglespeed = 0,img = love.graphics.newImage("img/meduse.png"),
+      speed = 200, anglespeed = 0,img = love.graphics.newImage("img/meduseF.png"),
+      animation = {time = 2},
       update = function (ennemy, dt)
         ennemy.timer = ennemy.timer + dt
         if ennemy.timer > 5 then
@@ -327,7 +341,8 @@ function paramEnnemyGeneration()
       end,
       draw = function (entity)
         love.graphics.setColor(1,1,1)
-        love.graphics.draw(entity.img, entity.x , entity.y, math.rad(entity.angle), 2, 2, entity.img:getWidth()/2, entity.img:getHeight()/2)
+        local spriteNum = math.floor(entity.animation.currentTime / entity.animation.duration * #entity.animation.quads) + 1
+        love.graphics.draw(entity.animation.spriteSheet, entity.animation.quads[spriteNum], entity.x - (entity.img:getWidth()/2), entity.y - (entity.img:getHeight()/2), 0, 2,2)
         --love.graphics.polygon("fill", entity.x+20*math.cos(math.rad(entity.angle)), entity.y + 20*math.sin(math.rad(entity.angle)), entity.x+ 20*math.cos(math.rad(entity.angle+120)), entity.y+20*math.sin(math.rad(entity.angle+120)), entity.x+20*math.cos(math.rad(entity.angle-120)), entity.y+20*math.sin(math.rad(entity.angle-120)))
       end
     },
@@ -338,9 +353,10 @@ function paramEnnemyGeneration()
       frequency = 1,
       xmin = 0, xmax = width,
       ymin = height, ymax = height,
-      anglemin=200, anglemax = 340,
+      anglemin=200, anglemax = 340, size = 32,
       speed = 200, anglespeed = 1, switch = 1,
-      img = newAnimation(love.graphics.newImage("img/globefish.png"), 32, 32,1),
+      img = love.graphics.newImage("img/globefish.png"),
+      animation = {time = 2},
       update = function (ennemy, dt)
 
         if ennemy.angle > 350 or ennemy.angle < 190 then
@@ -363,9 +379,9 @@ function paramEnnemyGeneration()
       draw = function (entity)
         love.graphics.setColor(1, 1, 1, 1)
         if entity.switch == 1 then
-          love.graphics.draw(entity.img.spriteSheet, entity.img.quads[2],entity.x, entity.y, math.rad(entity.angle), 2,2, entity.img.spriteSheet:getWidth()/2,16)--, entity.img.spriteSheet:getHeight()/2)
+          love.graphics.draw(entity.animation.spriteSheet, entity.animation.quads[2],entity.x, entity.y, math.rad(entity.angle), 2,2, entity.animation.spriteSheet:getWidth()/2,16)--, entity.img.spriteSheet:getHeight()/2)
         else
-          love.graphics.draw(entity.img.spriteSheet, entity.img.quads[1],entity.x, entity.y, math.rad(entity.angle), 1,1, entity.img.spriteSheet:getWidth()/2,16)--, entity.img.spriteSheet:getHeight()/2)
+          love.graphics.draw(entity.animation.spriteSheet, entity.animation.quads[1],entity.x, entity.y, math.rad(entity.angle), 1,1, entity.animation.spriteSheet:getWidth()/2,16)--, entity.img.spriteSheet:getHeight()/2)
         end
       end
     }
