@@ -10,6 +10,8 @@ gameover = false
 score = 0
 wasted = love.graphics.newImage("img/wasted.png")
 ocean = love.graphics.newImage("img/ocean.jpg")
+bulles = love.graphics.newImage("img/bulles.png")
+
 ----
 ----
  function love.load()
@@ -47,11 +49,14 @@ function love.draw()
         entity:draw()
     end
   end
+  --drawBulles()
   if gameover then
     gameoverdraw()
   end
 end
-
+function drawBulles()
+  love.graphics.draw(bulles, width/2, height - 50, 0, 2, 2)
+end
 function gameoverdraw()
   love.graphics.setColor(1, 1, 1, 1)
   love.graphics.draw(wasted, width/2 - (wasted:getWidth()), height/2 - (wasted:getHeight()),0,2,2)
