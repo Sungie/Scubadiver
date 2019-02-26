@@ -3,14 +3,18 @@
 --
 local Scubadiver = require "scubadiver"
 local Shield = require "shield"
+
 entities = {}
 
 gameover = false
-
+currScreen = "title"
 score = 0
+
+title = love.graphics.newImage("img/title.png")
 wasted = love.graphics.newImage("img/wasted.png")
 ocean = love.graphics.newImage("img/ocean.jpg")
 bulles = love.graphics.newImage("img/bulles.png")
+btnPlay = love.graphics.newImage("img/btnPlay.png")
 
 ----
 ----
@@ -28,32 +32,29 @@ bulles = love.graphics.newImage("img/bulles.png")
 
 end
 
-function printBG()
-  local bg = love.graphics.newQuad(4*width/5, 4*height/5, width, height, ocean:getWidth(), ocean:getHeight())
-  love.graphics.draw(ocean, bg,1,1)
-
-  love.graphics.draw(ocean, 0, -100*score, 0, width/ocean:getWidth(), 4*height/ocean:getHeight())
-
-end
-
 function love.draw()
-  love.graphics.setColor(1, 1, 1, 1)
-  printBG()
-  love.graphics.setColor(1, 0, 0, 1)
-  love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
-  for i, entity in pairs(entities) do
-    if entity.draw  then
-      --draw hitbox red circle
-      if entity.name == "shield" then else love.graphics.setColor(1, 0, 0, 1) love.graphics.circle("fill", entity.x, entity.y, 25) end
+  if currScreen == "title" then
+    drawTitle()
+  elseif currScreen == "play" then
+    love.graphics.setColor(1, 1, 1, 1)
+    drawBG()
+    love.graphics.setColor(1, 0, 0, 1)
+    love.graphics.print(tostring(math.floor(score)), 100 , 100, 0,1,1)
+    for i, entity in pairs(entities) do
+      if entity.draw  then
+        --draw hitbox red circle
+        if entity.name == "shield" then else love.graphics.setColor(1, 0, 0, 1) love.graphics.circle("fill", entity.x, entity.y, 25) end
 
-        entity:draw()
+          entity:draw()
+      end
+    end
+    --drawBulles()
+    if gameover then
+      gameoverdraw()
     end
   end
-  --drawBulles()
-  if gameover then
-    gameoverdraw()
-  end
 end
+
 function drawBulles()
   love.graphics.draw(bulles, width/2, height - 50, 0, 2, 2)
 end
@@ -61,24 +62,36 @@ function gameoverdraw()
   love.graphics.setColor(1, 1, 1, 1)
   love.graphics.draw(wasted, width/2 - (wasted:getWidth()), height/2 - (wasted:getHeight()),0,2,2)
 end
+function drawTitle()
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.draw(title, 0,0,0, width/title:getWidth(), height/title:getHeight())
+  love.graphics.draw(btnPlay, width/2 - btnPlay:getWidth()/2 , 4*height/5 - btnPlay:getHeight()/2)
+end
+function drawBG()
+  local bg = love.graphics.newQuad(4*width/5, 4*height/5, width, height, ocean:getWidth(), ocean:getHeight())
+  love.graphics.draw(ocean, bg,1,1)
+  love.graphics.draw(ocean, 0, -100*score, 0, width/ocean:getWidth(), 4*height/ocean:getHeight())
+end
 
 function love.update(dt)
-  --gameover = false
-  if not gameover then
-  --gameloop
-    score = score + dt
-    for i, entity in pairs(entities) do
-      if entity.update then entity:update(dt) end
-      if entity.animation then
-        entity.animation.currentTime = entity.animation.currentTime + dt
-        if entity.animation.currentTime >= entity.animation.duration then
-            entity.animation.currentTime = entity.animation.currentTime - entity.animation.duration
+  if currScreen == "title" then
+
+  elseif currScreen == "play" then
+    --gameover = false
+    if not gameover then
+    --gameloop
+      score = score + dt
+      for i, entity in pairs(entities) do
+        if entity.update then entity:update(dt) end
+        if entity.animation then
+          entity.animation.currentTime = entity.animation.currentTime + dt
+          if entity.animation.currentTime >= entity.animation.duration then
+              entity.animation.currentTime = entity.animation.currentTime - entity.animation.duration
+          end
         end
       end
+      spawn()
     end
-    spawn()
-
-
   end
 end
 
@@ -131,7 +144,14 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.mousepressed(x, y, button, isTouch)
-  shield:mousepressed(x,y,button,isTouch)
+  if currScreen == "play" then
+    shield:mousepressed(x,y,button,isTouch)
+  elseif currScreen == "title" then
+    if x >= width/2 - btnPlay:getWidth()/2 and x < width/2 + btnPlay:getWidth()/2
+      and y > 4*height/5 - btnPlay:getHeight()/2 and y < 4*height/5 + btnPlay:getHeight()/2 then
+        currScreen = "play"
+    end
+  end
 end
 
 function love.mousemoved(x, y, dx, dy)
