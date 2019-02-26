@@ -40,9 +40,10 @@ function love.draw()
     for i, entity in pairs(entities) do
       if entity.draw  then
         --draw hitbox red circle
-        --[[if entity.size then
+        --[[
+        if entity.size then
           if entity.name ~= "shield" then love.graphics.setColor(1, 0, 0, 0.5) love.graphics.circle("fill", entity.x, entity.y, entity.size) end
-        end]]
+        end--]]
         entity:draw()
       end
     end
@@ -103,6 +104,7 @@ function replay()
   diver = Scubadiver:new()
   table.insert(entities, shield)
   table.insert(entities, diver)
+  table.insert(entities, diver.head)
   paramEnnemyGeneration()
   print(shield)
   print(diver)
@@ -256,7 +258,7 @@ function paramEnnemyGeneration()
       frequency = 1,
       xmin = 0, xmax = width,
       ymin = 3*height/4, ymax = height,
-      anglemin=0, anglemax = 360, size = 64,
+      anglemin=0, anglemax = 360, size = 58,
       speed = 200, anglespeed = 30, img = love.graphics.newImage("img/sharkF.png"),
       animation = {time=1},
       update = function (ennemy, dt)

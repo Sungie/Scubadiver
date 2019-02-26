@@ -7,7 +7,9 @@ local Scubadiver = {}
     scubadiver.y = 50
     scubadiver.width = 100
     scubadiver.height = 100
-    scubadiver.size = scubadiver.img:getHeight()
+    scubadiver.size = scubadiver.img:getHeight() - 18
+    scubadiver.head = {x = scubadiver.x,y = scubadiver.y + 35, size = 15, draw = function() end}
+
     animation = newAnimation(scubadiver.img, 32, 40, 2)
 
 
