@@ -6,7 +6,7 @@ local Shield = {}
     shield.x = width/2
     shield.y = 500
     shield.vel = nil
-    shield.radius = 25
+    shield.size = 25
     shield.speed = 500
     shield.handled = false
 
@@ -30,13 +30,13 @@ local Shield = {}
 
     function shield:draw()
       love.graphics.setColor(0.5,0.5,0.5)
-      love.graphics.circle("fill", self.x, self.y, self.radius)
+      love.graphics.circle("fill", self.x, self.y, self.size)
     end
 
     function shield:mousepressed(x, y, button, isTouch)
       --Distance between {x,y} and center of the circle
       local dist = math.sqrt((math.pow((x - shield.x), 2)) + (math.pow((y - shield.y), 2)))
-      if math.floor(dist) < shield.radius then
+      if math.floor(dist) < shield.size then
           shield.handled = true
       end
     end

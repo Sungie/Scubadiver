@@ -7,6 +7,7 @@ local Scubadiver = {}
     scubadiver.y = 50
     scubadiver.width = 100
     scubadiver.height = 100
+    scubadiver.size = scubadiver.img:getHeight()
     animation = newAnimation(scubadiver.img, 32, 40, 2)
 
 

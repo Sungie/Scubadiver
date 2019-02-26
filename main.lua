@@ -15,6 +15,7 @@ wasted = love.graphics.newImage("img/wasted.png")
 ocean = love.graphics.newImage("img/ocean.jpg")
 bulles = love.graphics.newImage("img/bulles.png")
 btnPlay = love.graphics.newImage("img/btnPlay.png")
+btnRetry = love.graphics.newImage("img/btnRetry.png")
 
 ----
 ----
@@ -23,11 +24,7 @@ btnPlay = love.graphics.newImage("img/btnPlay.png")
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
 
-  shield = Shield:new()
-  diver = Scubadiver:new()
-  table.insert(entities, shield)
-  table.insert(entities, diver)
-  paramEnnemyGeneration()
+  replay()
 
 
 end
@@ -43,9 +40,10 @@ function love.draw()
     for i, entity in pairs(entities) do
       if entity.draw  then
         --draw hitbox red circle
-        if entity.name == "shield" then else love.graphics.setColor(1, 0, 0, 1) love.graphics.circle("fill", entity.x, entity.y, 25) end
-
-          entity:draw()
+        --[[if entity.size then
+          if entity.name ~= "shield" then love.graphics.setColor(1, 0, 0, 0.5) love.graphics.circle("fill", entity.x, entity.y, entity.size) end
+        end]]
+        entity:draw()
       end
     end
     --drawBulles()
@@ -61,6 +59,8 @@ end
 function gameoverdraw()
   love.graphics.setColor(1, 1, 1, 1)
   love.graphics.draw(wasted, width/2 - (wasted:getWidth()), height/2 - (wasted:getHeight()),0,2,2)
+  love.graphics.draw(btnRetry, width/2 - btnRetry:getWidth()/2 , 4*height/5 - btnRetry:getHeight()/2)
+
 end
 function drawTitle()
   love.graphics.setColor(1, 1, 1)
@@ -94,7 +94,22 @@ function love.update(dt)
     end
   end
 end
-
+function replay()
+  print(shield)
+  print(diver)
+  print(entities)
+  entities = {}
+  shield = Shield:new()
+  diver = Scubadiver:new()
+  table.insert(entities, shield)
+  table.insert(entities, diver)
+  paramEnnemyGeneration()
+  print(shield)
+  print(diver)
+  print(entities)
+  gameover = false
+  score = 0
+end
 function spawn()
   for p, param in pairs(spawns) do
     if score > param.start and score < param.stop then
@@ -109,7 +124,7 @@ function spawn()
         ennemy.draw = param.draw
         ennemy.timer = 0
         ennemy.switch = param.switch
-        ennemy.size = param.size and 1 or 25
+        ennemy.size = param.size
         ennemy.img = param.img
         if param.animation then ennemy.animation = newAnimation(param.img, param.size, param.size, animation.time) end
         table.insert(entities,ennemy)
@@ -127,11 +142,8 @@ function removeEntity(targetEntity)
   end
 end
 
-function touched(e1,e2,size)
-  if size == nil then
-    size = 50
-  end
-    if math.sqrt((math.pow((e1.x - e2.x), 2)) + (math.pow((e1.y - e2.y), 2))) < size then
+function touched(e1,e2)
+    if math.sqrt((math.pow((e1.x - e2.x), 2)) + (math.pow((e1.y - e2.y), 2))) < e1.size+e2.size then
       return true
     end
     return false
@@ -141,25 +153,36 @@ function love.keypressed(key, scancode, isrepeat)
   if key == "escape" then
     love.event.quit()
   end
+
+  if gameover and key == "space" then replay() end
 end
 
 function love.mousepressed(x, y, button, isTouch)
-  if currScreen == "play" then
+  if currScreen == "play" and not gameover then
     shield:mousepressed(x,y,button,isTouch)
-  elseif currScreen == "title" then
+  elseif currScreen == "title" and not gameover then
     if x >= width/2 - btnPlay:getWidth()/2 and x < width/2 + btnPlay:getWidth()/2
       and y > 4*height/5 - btnPlay:getHeight()/2 and y < 4*height/5 + btnPlay:getHeight()/2 then
         currScreen = "play"
+    end
+  elseif gameover then
+    if x >= width/2 - btnRetry:getWidth()/2 and x < width/2 + btnRetry:getWidth()/2
+      and y > 4*height/5 - btnRetry:getHeight()/2 and y < 4*height/5 + btnRetry:getHeight()/2 then
+        replay()
     end
   end
 end
 
 function love.mousemoved(x, y, dx, dy)
-  shield:mousemoved(x,y,dx,dy)
+  if currScreen == "play" and not gameover then
+    shield:mousemoved(x,y,dx,dy)
+  end
 end
 
 function love.mousereleased(x, y, button, isTouch)
-  shield:mousereleased(x,y,button,isTouch)
+  if currScreen == "play" and not gameover then
+    shield:mousereleased(x,y,button,isTouch)
+  end
 end
 
 function newAnimation(image, width, height, duration)
@@ -187,7 +210,7 @@ function paramEnnemyGeneration()
       start = 0,stop = 1000,
       frequency = 1,
       xmin = 0, xmax = width,
-      ymin = height/2, ymax = height,
+      ymin = height/2, ymax = height, size = 25,
       anglemin=0, anglemax = 360,
       speed = 100, anglespeed = 20,img = love.graphics.newImage("img/fish.png"),
       update = function (ennemy, dt)
@@ -280,7 +303,7 @@ function paramEnnemyGeneration()
       frequency = 1,
       xmin = width, xmax = width,
       ymin = 32, ymax = height/3,
-      anglemin=180, anglemax = 180, size = 32,
+      anglemin=180, anglemax = 180, size = 20,
       speed = 200, anglespeed = 0,img = love.graphics.newImage("img/turtleF.png"),
       animation = {time = 2},
       update = function (ennemy, dt)
