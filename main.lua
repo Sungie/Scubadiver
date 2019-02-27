@@ -18,12 +18,18 @@ btnPlay = love.graphics.newImage("img/btnPlay.png")
 btnRetry = love.graphics.newImage("img/btnRetry.png")
 sndAmbiance = love.audio.newSource("snd/sndAmbiance.mp3", "stream")
 sndEffect = love.audio.newSource("snd/sndEffect.mp3", "static")
+sndSelected = love.audio.newSource("snd/sndSelected.wav", "static")
+sndIntro = love.audio.newSource("snd/sndIntro.mp3", "stream")
+
 ----
 ----
  function love.load()
   love.window.setFullscreen(true)
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
+
+  love.audio.stop()
+  love.audio.play(sndIntro)
 end
 
 function love.draw()
@@ -93,6 +99,7 @@ function love.update(dt)
     end
   end
 end
+
 function replay()
   entities = {}
   shield = Shield:new()
@@ -103,7 +110,8 @@ function replay()
   paramEnnemyGeneration()
   gameover = false
   score = 0
-love.audio.play(sndAmbiance)
+  love.audio.stop()
+  love.audio.play(sndAmbiance)
 
 end
 function spawn()
@@ -133,7 +141,6 @@ function removeEntity(targetEntity)
   for i, entity in pairs(entities) do
     if entity == targetEntity then
       table.remove(entities,i)
-      love.audio.play(sndEffect)
       return
     end
   end
@@ -141,6 +148,8 @@ end
 
 function touched(e1,e2)
     if math.sqrt((math.pow((e1.x - e2.x), 2)) + (math.pow((e1.y - e2.y), 2))) < e1.size+e2.size then
+      love.audio.play(sndEffect)
+
       return true
     end
     return false
@@ -162,6 +171,7 @@ function love.mousepressed(x, y, button, isTouch)
       and y > 4*height/5 - btnPlay:getHeight()/2 and y < 4*height/5 + btnPlay:getHeight()/2 then
         currScreen = "play"
         replay()
+        love.audio.play(sndSelected)
     end
   elseif gameover then
     if x >= width/2 - btnRetry:getWidth()/2 and x < width/2 + btnRetry:getWidth()/2
