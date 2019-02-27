@@ -9,7 +9,7 @@ local Shield = {}
     shield.size = 25
     shield.speed = 500
     shield.handled = false
-
+    shield.img = love.graphics.newImage("img/shield.png")
 
     function shield:update(dt)
       if shield.vel ~= nil then
@@ -29,8 +29,10 @@ local Shield = {}
     end
 
     function shield:draw()
-      love.graphics.setColor(0.5,0.5,0.5)
-      love.graphics.circle("fill", self.x, self.y, self.size)
+      --love.graphics.setColor(0.5,0.5,0.5)
+      --love.graphics.circle("fill", self.x, self.y, self.size)
+      love.graphics.setColor(1,1,1)
+      love.graphics.draw(shield.img, self.x - self.size, self.y - self.size, 0)
     end
 
     function shield:mousepressed(x, y, button, isTouch)

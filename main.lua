@@ -16,17 +16,14 @@ ocean = love.graphics.newImage("img/ocean.jpg")
 bulles = love.graphics.newImage("img/bulles.png")
 btnPlay = love.graphics.newImage("img/btnPlay.png")
 btnRetry = love.graphics.newImage("img/btnRetry.png")
-
+sndAmbiance = love.audio.newSource("snd/sndAmbiance.mp3", "stream")
+sndEffect = love.audio.newSource("snd/sndEffect.mp3", "static")
 ----
 ----
  function love.load()
   love.window.setFullscreen(true)
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
-
-  replay()
-
-
 end
 
 function love.draw()
@@ -50,6 +47,7 @@ function love.draw()
     --drawBulles()
     if gameover then
       gameoverdraw()
+      love.audio.stop()
     end
   end
 end
@@ -96,9 +94,6 @@ function love.update(dt)
   end
 end
 function replay()
-  print(shield)
-  print(diver)
-  print(entities)
   entities = {}
   shield = Shield:new()
   diver = Scubadiver:new()
@@ -106,11 +101,10 @@ function replay()
   table.insert(entities, diver)
   table.insert(entities, diver.head)
   paramEnnemyGeneration()
-  print(shield)
-  print(diver)
-  print(entities)
   gameover = false
   score = 0
+love.audio.play(sndAmbiance)
+
 end
 function spawn()
   for p, param in pairs(spawns) do
@@ -139,6 +133,7 @@ function removeEntity(targetEntity)
   for i, entity in pairs(entities) do
     if entity == targetEntity then
       table.remove(entities,i)
+      love.audio.play(sndEffect)
       return
     end
   end
@@ -166,6 +161,7 @@ function love.mousepressed(x, y, button, isTouch)
     if x >= width/2 - btnPlay:getWidth()/2 and x < width/2 + btnPlay:getWidth()/2
       and y > 4*height/5 - btnPlay:getHeight()/2 and y < 4*height/5 + btnPlay:getHeight()/2 then
         currScreen = "play"
+        replay()
     end
   elseif gameover then
     if x >= width/2 - btnRetry:getWidth()/2 and x < width/2 + btnRetry:getWidth()/2
